@@ -38,8 +38,12 @@ import { AgGridVue } from "ag-grid-vue";
 import "ag-grid-enterprise";
 import { AutocompleteSelectCellEditor } from "ag-grid-autocomplete-editor";
 import "../node_modules/ag-grid-autocomplete-editor/dist/main.css";
-import { varianten, modelljahrTeilvariante, cnummern } from "../varianten.js";
-import ActionCellRenderer from "./action-cell-renderer.js";
+import {
+  varianten,
+  modelljahrTeilvariante,
+  cnummern,
+  flattenChildrenRecursively,
+} from "../varianten.js";
 import VueActionCellRenderer from "./vue-action-cell-renderer.js";
 
 export default {
@@ -191,7 +195,7 @@ export default {
       },
       {
         field: "action",
-        headerName: "Aktion",
+        headerComponentParams: { template: '<i class="fa fa-wrench"></i>' },
         cellStyle: { textAlign: "center" },
         cellRenderer: "vueActionCellRenderer",
         /*

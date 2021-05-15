@@ -198,6 +198,42 @@ const cnummern = [
   { value: "DÄNEMARK", label: "C12-DÄNEMARK" },
 ];
 
+const flattenChildrenRecursively = (
+  data,
+  parent = null,
+  childHierachy = null
+) => {
+  let newData = [];
+
+  if (data) {
+    data.forEach((initialRow, parentIndex) => {
+      let parentHierachy = [];
+      initialRow.hierachy = parentHierachy;
+
+      if (parent) {
+        initialRow.parent = parent;
+        parentHierachy = [...childHierachy];
+        initialRow.hierachy = parentHierachy;
+      }
+      parentHierachy.push(parentIndex);
+
+      newData.push(initialRow);
+
+      if (initialRow.resource) {
+        newData = [
+          ...newData,
+          ...flattenChildrenRecursively(
+            initialRow.resource,
+            initialRow,
+            parentHierachy
+          ),
+        ];
+      }
+    });
+  }
+
+  return newData;
+};
 
 //export default varianten;
 
@@ -205,5 +241,6 @@ const cnummern = [
 export {
   varianten,
   modelljahrTeilvariante,
-  cnummern
+  cnummern,
+  flattenChildrenRecursively
 }

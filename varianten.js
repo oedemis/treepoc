@@ -1,52 +1,78 @@
 const varianten = [
   {
     id: 1,
-    produktschluessel: [
-      "1"
-    ],
-    name: "F*",
+    produktschluessel: "F*",
     vonmodelljahr: "6: Modelljahr 2005/06",
     bismodelljahr: "F: Modelljahr 2005/06",
     motortyp: "",
     getriebetyp: "",
     typ: "Teilvariante",
     label: false,
-  },
-  {
-    id: 2,
-    produktschluessel: [
-      "1", "2"
-    ],
-    vonmodelljahr: "Operator",
-    bismodelljahr: "Ausstattungsnr",
-    motortyp: "Bezeichnung",
-    getriebetyp: "Verknüpfung",
-    typ: "Ausstattungsdefinitionen",
-    label: true,
-  },
-  {
-    id: 3,
-    produktschluessel: [
-      "1", "2", "3"
-    ],
-    vonmodelljahr: "+ (enthält)",
-    bismodelljahr: "XMA",
-    motortyp: "HIMMEL MIT LEDER BEZOGEN",
-    getriebetyp: "und",
-    typ: "Ausstattungsdefinition",
-    label: false,
-  },
-  {
-    id: 4,
-    produktschluessel: [
-      "1", "2", "4"
-    ],
-    vonmodelljahr: "- (enthält nicht)",
-    bismodelljahr: "MAX",
-    motortyp: "LEDER BEZOGEN",
-    getriebetyp: "und",
-    typ: "Ausstattungsdefinition",
-    label: false,
+    varianten: [
+      // Ausstattungsdefinitionen
+      {
+        id: 2,
+        produktschluessel: "Ausstattungsdefinitionen",
+        vonmodelljahr: "Operator",
+        bismodelljahr: "Ausstattungsnr",
+        motortyp: "Bezeichnung",
+        getriebetyp: "Verknüpfung",
+        typ: "Ausstattungsdefinition",
+        label: true,
+        varianten: [
+          {
+            id: 3,
+            produktschluessel: "Ausstattungsdefinition",
+            vonmodelljahr: "+ (enthält)",
+            bismodelljahr: "XMA",
+            motortyp: "HIMMEL MIT LEDER BEZOGEN",
+            getriebetyp: "und",
+            typ: "Ausstattungsdefinition",
+            label: false,
+          },
+          {
+            id: 4,
+            produktschluessel: "Ausstattungsdefinition",
+            vonmodelljahr: "- (enthält nicht)",
+            bismodelljahr: "MAX",
+            motortyp: "LEDER BEZOGEN",
+            getriebetyp: "und",
+            typ: "Ausstattungsdefinition",
+            label: false,
+          },
+        ],
+      },
+      // CNummerdefinitionen
+      {
+        produktschluessel: "C-Nummerdefinitionen",
+        vonmodelljahr: "Operator",
+        bismodelljahr: "Cnr",
+        motortyp: "Bezeichnung",
+        getriebetyp: "Verknüpfung",
+        typ: "CNummerdefinition",
+        label: true,
+        varianten: [
+          {
+            produktschluessel: "C-Nummerdefinition",
+            vonmodelljahr: "+ (enthält)",
+            bismodelljahr: "C02-USA",
+            motortyp: "USA",
+            getriebetyp: "und",
+            typ: "CNummerdefinition",
+            label: false,
+          },
+          {
+            produktschluessel: "C-Nummerdefinition",
+            vonmodelljahr: "- (enthält nicht)",
+            bismodelljahr: "C10-SCHWEIZ",
+            motortyp: "SCHWEIZ",
+            getriebetyp: "und",
+            typ: "CNummerdefinition",
+            label: false,
+          },
+        ],
+      },
+    ]
   },
 ];
 
@@ -139,8 +165,6 @@ const varianten2 = [
   },
 ];
 
-
-
 const modelljahrTeilvariante = [
   { value: "6: Modelljahr 2005/06", label: "6: Modelljahr 2005/06" },
   { value: "D: Modelljahr 2012/13", label: "D: Modelljahr 2012/13" },
@@ -152,6 +176,9 @@ const modelljahrTeilvariante = [
   { value: 6, label: "K: Modelljahr 2018/19" },
   { value: 7, label: "L: Modelljahr 2019/20" },
   { value: 8, label: "T: Modelljahr 1995/96" },
+  { value: 9, label: "O: Modelljahr 1995/96" },
+  { value: 10, label: "M: Modelljahr 1995/96" },
+  { value: 11, label: "N: Modelljahr 1995/96" },
 ];
 
 const versandarten = [
@@ -219,11 +246,11 @@ const flattenChildrenRecursively = (
 
       newData.push(initialRow);
 
-      if (initialRow.resource) {
+      if (initialRow.varianten) {
         newData = [
           ...newData,
           ...flattenChildrenRecursively(
-            initialRow.resource,
+            initialRow.varianten,
             initialRow,
             parentHierachy
           ),

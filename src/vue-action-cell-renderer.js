@@ -2,7 +2,7 @@ import Vue from 'vue';
 
 export default Vue.extend({
     template: `
-    <div class="btn-group"">
+    <div style="width: 100%" class="btn-group"">
         <button type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" >
             <i class="fa fa-ellipsis-v"></i>
         </button>

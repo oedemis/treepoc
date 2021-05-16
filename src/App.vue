@@ -91,7 +91,7 @@ export default {
     };
     */
 
-    this.rowData = this.loadedData;
+    this.rowData = flattenChildrenRecursively(this.loadedData);
 
     this.columnDefs = [
       {
@@ -107,8 +107,9 @@ export default {
                 minLength: 3,
                 selectData: this.modelljahrTeilvariante,
                 placeholder: "Select an option",
+                popUp: true,
                 autocomplete: {
-                  strict: false,
+                  strict: true,
                   autoselectfirst: false,
                   showOnFocus: true,
                   fetch: (cellEditor, text, update) => {
@@ -120,18 +121,14 @@ export default {
             };
           } else {
             return {
-              component: "agRichSelect",
-              params: { values: ["+ (enthält)", "- (enthält nicht)"] },
+              component: "agRichSelectCellEditor",
+              params: {
+                values: ["+ (enthält)", "- (enthält nicht)"],
+              },
             };
           }
-          //return null;
         },
-        editable: (params) => {
-          if (params.data.label) {
-            return false;
-          }
-          return true;
-        },
+        editable: (params) => (params.data.label ? false : true),
         valueFormatter: (params) => {
           if (params.value) {
             return params.value.label || params.value.value || params.value;
@@ -142,15 +139,9 @@ export default {
       {
         field: "bismodelljahr",
         headerName: "Bis Modelljahr",
-        cellEditorSelector: (params) => {
-          return this.whichCellEditor(params.data.typ);
-        },
-        editable: (params) => {
-          if (params.data.label) {
-            return false;
-          }
-          return true;
-        },
+        //suppressKeyboardEvent: false,
+        cellEditorSelector: (params) => this.whichCellEditor(params.data.typ),
+        editable: (params) => (params.data.label ? false : true),
         valueFormatter: (params) => {
           if (params.value) {
             return params.value.label || params.value.value || params.value;
@@ -186,12 +177,7 @@ export default {
           }
           return null;
         },
-        editable: (params) => {
-          if (params.data.label) {
-            return false;
-          }
-          return true;
-        },
+        editable: (params) => (params.data.label ? false : true),
       },
       {
         field: "action",
@@ -229,16 +215,14 @@ export default {
         suppressDoubleClickExpand: true,
       },
       valueGetter: (params) => {
-        if (params.node.data.typ === "Teilvariante")
-          return params.node.data.name;
-        return params.node.data.typ;
+        return params.data.produktschluessel;
       },
       cellStyle: { pointerEvents: "auto" },
     };
     this.groupDefaultExpanded = -1;
     this.rowSelection = "single";
     this.getDataPath = (data) => {
-      return data.produktschluessel;
+      return data.hierachy;
     };
     this.rowClassRules = {
       isLabel: (params) => {
@@ -289,13 +273,14 @@ export default {
             placeholder: "Select an option",
             autocomplete: {
               onSelect(cellEditor, item) {
+                item = cellEditor.currentItem;
                 if (type === "CNummerdefinition") {
                   let selectedRows = gridApi.getSelectedRows();
                   let selectedRow =
                     selectedRows.length === 1 ? selectedRows[0] : "";
                   selectedRow.motortyp = item.value;
                 }
-                cellEditor.currentItem = item;
+                //cellEditor.currentItem = item;
               },
               render(cellEditor, item, value) {
                 const itemElement = document.createElement("div");
@@ -310,11 +295,13 @@ export default {
                   regex,
                   function strongify(match) {
                     matched = true;
+                    cellEditor.currentItem = item;
                     return `<strong>${match}</strong>`;
                   }
                 );
                 if (matched) {
                   itemElement.classList.add("matched");
+                  //itemElement.setAttribute("id", "matched");
                 }
                 itemElement.append(fieldItem);
                 cellEditor.addManagedListener(
@@ -326,15 +313,18 @@ export default {
                     event.stopPropagation();
                   }
                 );
+
                 return itemElement;
               },
-              strict: false,
+              strict: true,
               autoselectfirst: false,
               showOnFocus: true,
               preventSubmit: true,
               disableAutoSelect: false,
               fetch: (cellEditor, text, update) => {
                 update(data);
+                if (document.querySelector(".matched"))
+                  document.querySelector(".matched").scrollIntoView();
               },
             },
           },
@@ -379,8 +369,12 @@ export default {
   pointer-events: none;
 }
 
+.autcomplete {
+  box-sizing: border-box;
+}
+
 .ag-cell-editor-autocomplete {
-  background-color: #f5f6fa;
+  background-color: #f8f8f8;
   z-index: 1000;
   overflow-y: auto;
   overflow-x: hidden;
@@ -409,6 +403,6 @@ export default {
 }
 
 .matched {
-  background: #dcdde1;
+  background: rgba(33, 150, 243, 0.3);
 }
 </style>

@@ -184,11 +184,11 @@ export default {
         headerComponentParams: { template: '<i class="fa fa-wrench"></i>' },
         cellStyle: { textAlign: "center" },
         cellRenderer: "vueActionCellRenderer",
-        /*
+
         cellRendererParams: {
-            isLabel : "isEdit"
+          rowData: this.rowData,
         },
-        */
+
         //cellEditor: "vueActionCellRenderer",
         cellClass: "actions-button-cell",
 
@@ -235,6 +235,9 @@ export default {
     this.gridColumnApi = this.gridOptions.columnApi;
   },
   methods: {
+    onDelete(msg) {
+      console.log(msg);
+    },
     onFilterTextBoxChanged() {
       this.gridApi.setQuickFilter(
         document.getElementById("filter-text-box").value
@@ -272,7 +275,8 @@ export default {
             minLength: 3,
             placeholder: "Select an option",
             autocomplete: {
-              onSelect(cellEditor, item) {
+              onSelect(cellEditor, item, event) {
+                console.log(event);
                 item = cellEditor.currentItem;
                 if (type === "CNummerdefinition") {
                   let selectedRows = gridApi.getSelectedRows();
@@ -322,6 +326,7 @@ export default {
               preventSubmit: true,
               disableAutoSelect: false,
               fetch: (cellEditor, text, update) => {
+                console.log("fetch :)");
                 update(data);
                 if (document.querySelector(".matched"))
                   document.querySelector(".matched").scrollIntoView();

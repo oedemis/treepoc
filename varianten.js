@@ -29,6 +29,7 @@ const varianten = [
             getriebetyp: "und",
             typ: "Ausstattungsdefinition",
             label: false,
+            varianten: [],
           },
           {
             id: 4,
@@ -39,6 +40,7 @@ const varianten = [
             getriebetyp: "und",
             typ: "Ausstattungsdefinition",
             label: false,
+            varianten: [],
           },
         ],
       },
@@ -60,6 +62,7 @@ const varianten = [
             getriebetyp: "und",
             typ: "CNummerdefinition",
             label: false,
+            varianten: [],
           },
           {
             produktschluessel: "C-Nummerdefinition",
@@ -69,6 +72,7 @@ const varianten = [
             getriebetyp: "und",
             typ: "CNummerdefinition",
             label: false,
+            varianten: [],
           },
         ],
       },

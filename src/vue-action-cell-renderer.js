@@ -1,12 +1,9 @@
 import Vue from 'vue';
-import {
-    flattenChildrenRecursively,
-} from "../varianten.js";
 
 export default Vue.extend({
     template: `
     <div style="width: 100%" class="btn-group"">
-        <button type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" >
+        <button @click="invokeParentMethod" type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" >
             <i class="fa fa-ellipsis-v"></i>
         </button>
 
@@ -24,7 +21,7 @@ export default Vue.extend({
         </div>
 
         <div v-else-if="determineUsabilityForLabel('Ausstattungsdefinition')" class="dropdown-menu dropdown-menu-right">
-            <button class="dropdown-item" type="button"><i class="fa fa-cube"></i>&nbsp;&nbsp;Ausstattungsdefinition Anlegen</button>
+            <button @click="createDto('Ausstattungsdefinition')" class="dropdown-item" type="button"><i class="fa fa-cube"></i>&nbsp;&nbsp;Ausstattungsdefinition Anlegen</button>
             <button @click="deleteLabelDto()" class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Ausstattungsdefinition Löschen</button>
         </div>
         <div v-else-if="determineUsabilityForItem('Ausstattungsdefinition')" class="dropdown-menu dropdown-menu-right">
@@ -32,7 +29,7 @@ export default Vue.extend({
         </div>
 
         <div v-else-if="determineUsabilityForLabel('Aussenfarbdefinition')" class="dropdown-menu dropdown-menu-right">
-            <button class="dropdown-item" type="button"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Außenfarbdefinition Anlegen</button>
+            <button @click="createDto('Aussenfarbdefinition')" class="dropdown-item" type="button"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Außenfarbdefinition Anlegen</button>
             <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Außenfarbdefinition Löschen</button>
         </div>
         <div v-else-if="determineUsabilityForItem('Aussenfarbdefinition')" class="dropdown-menu dropdown-menu-right">
@@ -41,7 +38,7 @@ export default Vue.extend({
 
 
         <div v-else-if="determineUsabilityForLabel('CNummerdefinition')" class="dropdown-menu dropdown-menu-right">
-            <button class="dropdown-item" type="button"><i class="fa fa-globe"></i>&nbsp;&nbsp;C-Nummerdefinition Anlegen</button>
+            <button @click="createDto('CNummerdefinition')" class="dropdown-item" type="button"><i class="fa fa-globe"></i>&nbsp;&nbsp;C-Nummerdefinition Anlegen</button>
             <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;C-Nummerdefinition Löschen</button>
         </div>
         <div v-else-if="determineUsabilityForItem('CNummerdefinition')" class="dropdown-menu dropdown-menu-right">
@@ -49,7 +46,7 @@ export default Vue.extend({
         </div>
 
         <div v-else-if="determineUsabilityForLabel('Datumsdefinition')" class="dropdown-menu dropdown-menu-right">
-            <button class="dropdown-item" type="button"><i class="fa fa-calendar"></i>&nbsp;&nbsp;Datumsdefinition Anlegen</button>
+            <button @click="createDto('Datumsdefinition')" class="dropdown-item" type="button"><i class="fa fa-calendar"></i>&nbsp;&nbsp;Datumsdefinition Anlegen</button>
             <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Datumsdefinition Löschen</button>
         </div>
         <div v-else-if="determineUsabilityForItem('Datumsdefinition')" class="dropdown-menu dropdown-menu-right">
@@ -57,7 +54,7 @@ export default Vue.extend({
         </div>
 
         <div v-else-if="determineUsabilityForLabel('Innenausstattungsdefinition')" class="dropdown-menu dropdown-menu-right">
-            <button class="dropdown-item" type="button"><i class="fa fa-building"></i>&nbsp;&nbsp;Innenausstattungsdefinition Anlegen</button>
+            <button @click="createDto('Innenausstattungsdefinition')" class="dropdown-item" type="button"><i class="fa fa-building"></i>&nbsp;&nbsp;Innenausstattungsdefinition Anlegen</button>
             <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Innenausstattungsdefinition Löschen</button>
         </div>
         <div v-else-if="determineUsabilityForItem('Innenausstattungsdefinition')" class="dropdown-menu dropdown-menu-right">
@@ -65,7 +62,7 @@ export default Vue.extend({
         </div>
 
         <div v-else-if="determineUsabilityForLabel('Nummernkreisdefinition')" class="dropdown-menu dropdown-menu-right">
-            <button class="dropdown-item" type="button"><i class="fa fa-list-ol"></i>&nbsp;&nbsp;Nummernkreisdefinition Anlegen</button>
+            <button @click="createDto('Nummernkreisdefinition')" class="dropdown-item" type="button"><i class="fa fa-list-ol"></i>&nbsp;&nbsp;Nummernkreisdefinition Anlegen</button>
             <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Nummernkreisdefinition Löschen</button>
         </div>
         <div v-else-if="determineUsabilityForItem('Nummernkreisdefinition')" class="dropdown-menu dropdown-menu-right">
@@ -73,7 +70,7 @@ export default Vue.extend({
         </div>
 
         <div v-else-if="determineUsabilityForLabel('Verbauvorschriftdefinition')" class="dropdown-menu dropdown-menu-right">
-            <button class="dropdown-item" type="button"><i class="fa fa-balance-scale"></i>&nbsp;&nbsp;Verbauvorschriftdefinition Anlegen</button>
+            <button @click="createDto('Verbauvorschriftdefinition')" class="dropdown-item" type="button"><i class="fa fa-balance-scale"></i>&nbsp;&nbsp;Verbauvorschriftdefinition Anlegen</button>
             <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Verbauvorschriftdefinition Löschen</button>
         </div>
         <div v-else-if="determineUsabilityForItem('Verbauvorschriftdefinition')" class="dropdown-menu dropdown-menu-right">
@@ -81,7 +78,7 @@ export default Vue.extend({
         </div>
 
         <div v-else-if="determineUsabilityForLabel('Versandartdefinition')" class="dropdown-menu dropdown-menu-right">
-        <button class="dropdown-item" type="button"><i class="fa fa-envelope-square"></i>&nbsp;&nbsp;Versandartdefinition Anlegen</button>
+            <button @click="createDto('Versandartdefinition')" class="dropdown-item" type="button"><i class="fa fa-envelope-square"></i>&nbsp;&nbsp;Versandartdefinition Anlegen</button>
             <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Versandartdefinition Löschen</button>
         </div>
         <div v-else-if="determineUsabilityForItem('Versandartdefinition')" class="dropdown-menu dropdown-menu-right">
@@ -103,11 +100,11 @@ export default Vue.extend({
     methods: {
         refresh(params) {
             this.params = params;
-            //this.setMood(params);
         },
 
-        setMood(params) {
-            // this.mood = params.value;
+        invokeParentMethod() {
+            //this.params.context.componentParent.methodFromParent(`Row: ${this.params.node.rowIndex}, Col: ${this.params.colDef.colId}`)
+            this.params.node.setSelected(true, true);
         },
 
         deleteLabelDto() {
@@ -126,38 +123,21 @@ export default Vue.extend({
 
 
         deleteDto() {
-
             var selectedNode = this.params.api.getSelectedNodes()[0];
-            //const items = this.getRowsToRemove(selectedNode);
-            //this.params.api.applyTransaction({ remove: items });
+            if (!selectedNode) {
+                console.warn('No nodes selected!');
+                return;
+            }
+            const toRemoved = this.getRowsToRemove(selectedNode);
+            this.params.api.applyTransaction({ remove: toRemoved });
 
-            var selectedData = this.params.api.getSelectedRows()[0];
-            var res = this.params.api.applyTransaction({ remove: selectedData.varianten });
-            var res = this.params.api.applyTransaction({ remove: [selectedData] });
+            const newRowData = this.$parent.$parent.rowData.filter(item => !toRemoved.includes(item));
+            this.$parent.$parent.rowData = newRowData;
 
-            console.log(this.$parent.rowData);
-
-            let newRowData = this.$parent.rowData.filter(row => {
-                return row !== selectedData;
-            });
-            this.$parent.rowData = newRowData;
-
-            //this.params.api.refreshCells();
-
-            //this.$emit('delete', 'deleted :)');
-            //selectedData[0].parent = selectedData[0].parent.varianten.filter(element => element.id === selectedData[0].id)
-
-            //this.params.data.find(element => element.typ == type);
-
-            //const item = this.params.data.varianten.find(element => element.typ == type);
-            // if teilvariante delete all childs 
             if (this.cellType === "Teilvariante") {
                 //this.params.api.setRowData([]);
                 //this.params.data.pop();
             }
-
-
-
         },
 
         getRowsToRemove(node) {
@@ -169,209 +149,263 @@ export default Vue.extend({
         },
 
         createDto(type) {
-            /**
-               * If Teilvariante einfach adden
-               * Ansonsten suche die Dto und adde es zu den Label
-               */
-
-            // Optimieren für unterpunkte
-            //type = this.cellType;
-
-            const item = this.params.data.varianten.find(element => element.typ == type);
+            //const selectedRow = this.params.api.getSelectedRows()[0]; // or raw data
             let addedRow = null;
-            // root
-            if (item === null || item === undefined) {
-                addedRow = this.createLabel(type);
-                //this.params.data.varianten.push(addedRow);
-            } else {
-                addedRow = this.createItem(type);
-                //item.varianten.push(addedRow);
-            }
-            this.$parent.$parent.onCreateDto(addedRow);
-            //console.log([this.params.data]);
-            // this.params.api.applyTransaction({ add: flattenChildrenRecursively([this.params.data]) });
-        },
+            const selectedRow = this.params.api.getSelectedNodes()[0];
 
-        createItem(type) {
+            // TODO selectedRow null check
+            const isTypePresentInGroup = this.isTypePresentInGroup(type, selectedRow);
+
+
+            if (isTypePresentInGroup == false) {
+                // Add Label
+                let keyPath = selectedRow.data.produktschluessel.slice();
+                addedRow = this.createLabel(type, keyPath.slice());
+            } else {
+                // add child
+                let keyPath = selectedRow.data.produktschluessel.slice();
+                // Von Parent Root aus geadded zB F*
+                if (keyPath.length == 1) {
+                    keyPath.push(this.getPluralTyp(type));
+                }
+                addedRow = this.createItem(type, keyPath.slice());
+            }
+            if (addedRow != null) {
+                let transaction = this.params.api.applyTransaction({ add: [addedRow] });
+                this.$parent.$parent.rowData.push(addedRow);
+                if (transaction.add) {
+                    console.log(transaction.add[0]);
+                    transaction.add[0].setSelected(true, true);
+                }
+            }
+        },
+        isTypePresentInGroup(type, selectedNode) {
+            let isTypePresent = false;
+            for (let i = 0; i < selectedNode.childrenAfterGroup.length; i++) {
+                if (selectedNode.childrenAfterGroup[i].data.typ === type) {
+                    isTypePresent = true;
+                    break;
+                }
+            }
+            if (selectedNode.data.typ === type && selectedNode.data.label) {
+                isTypePresent = true;
+            }
+            return isTypePresent;
+        },
+        getPluralTyp(type) {
+            if (type === "Aussenfarbdefinition")
+                return "Aussenfarbdefinitionen";
+
+            if (type === "CNummerdefinition")
+                return "C-Nummerdefinitionenen";
+
+            if (type === "Ausstattungsdefinition")
+                return "Ausstattungsdefinitionen";
+
+            if (type === "Datumsdefinition")
+                return "Datumsdefinitionen";
+
+            if (type === "Innenausstattungsdefinition")
+                return "Innenausstattungsdefinitionen";
+
+            if (type === "Nummernkreisdefinition")
+                return "Nummernkreisdefinitionen";
+
+            if (type === "Versandartdefinition")
+                return "Versandartdefinitionen";
+
+            if (type === "Verbauvorschriftdefinition")
+                return "Verbauvorschriftdefinitionen";
+
+        },
+        createItem(type, keyArr) {
             if (type === "Aussenfarbdefinition") {
                 return {
-                    produktschluessel: type,
+                    id: uuidv4(),
+                    produktschluessel: keyArr,
+                    vonmodelljahr: "+ (enthält)",
+                    bismodelljahr: "",
+                    labelName: "Aussenfarbdefinition",
+                    motortyp: "",
+                    getriebetyp: "und",
+                    typ: type,
+                    label: false,
+                };
+            } else if (type === "CNummerdefinition") {
+                return {
+                    id: uuidv4(),
+                    produktschluessel: keyArr,
+                    labelName: "C-Nummerdefinition",
                     vonmodelljahr: "+ (enthält)",
                     bismodelljahr: "",
                     motortyp: "",
                     getriebetyp: "und",
                     typ: type,
                     label: false,
-                    varianten: [],
-                };
-            } else if (type === "CNummerdefinition") {
-                return {
-                    produktschluessel: "C-Nummerdefinition",
-                    vonmodelljahr: "+ (enthält)",
-                    bismodelljahr: "",
-                    motortyp: "",
-                    getriebetyp: "und",
-                    typ: "CNummerdefinition",
-                    label: false,
-                    varianten: [],
                 };
             } else if (type === "Ausstattungsdefinition") {
                 return {
-                    produktschluessel: type,
+                    id: uuidv4(),
+                    produktschluessel: keyArr,
+                    labelName: "Ausstattungsdefinition",
                     vonmodelljahr: "+ (enthält)",
                     bismodelljahr: "",
                     motortyp: "",
                     getriebetyp: "und",
-                    typ: "CNummerdefinition",
+                    typ: type,
                     label: false,
-                    varianten: [],
                 };
             } else if (type === "Datumsdefinition") {
                 return {
-                    produktschluessel: type,
+                    id: uuidv4(),
+                    produktschluessel: keyArr,
+                    labelName: "Datumsdefinition",
                     vonmodelljahr: "+ (enthält)",
                     bismodelljahr: "",
                     motortyp: "",
                     getriebetyp: "und",
-                    typ: "Datumsdefinition",
+                    typ: type,
                     label: false,
-                    varianten: [],
                 };
             } else if (type === "Innenausstattungsdefinition") {
                 return {
-                    produktschluessel: type,
+                    id: uuidv4(),
+                    produktschluessel: keyArr,
+                    labelName: "Innenausstattungsdefinition",
                     vonmodelljahr: "+ (enthält)",
                     bismodelljahr: "",
                     motortyp: "",
                     getriebetyp: "und",
-                    typ: "Innenausstattungsdefinition",
+                    typ: type,
                     label: false,
-                    varianten: [],
                 };
             } else if (type === "Nummernkreisdefinition") {
                 return {
-                    produktschluessel: type,
+                    id: uuidv4(),
+                    produktschluessel: keyArr,
+                    labelName: "Nummernkreisdefinition",
                     vonmodelljahr: "+ (enthält)",
                     bismodelljahr: "",
                     motortyp: "",
                     getriebetyp: "und",
-                    typ: "Nummernkreisdefinition",
+                    typ: type,
                     label: false,
-                    varianten: [],
                 };
             } else if (type === "Versandartdefinition") {
                 return {
-                    produktschluessel: type,
+                    id: uuidv4(),
+                    produktschluessel: keyArr,
+                    labelName: "Versandartdefinition",
                     vonmodelljahr: "+ (enthält)",
                     bismodelljahr: "",
                     motortyp: "",
                     getriebetyp: "und",
-                    typ: "Versandartdefinition",
+                    typ: type,
                     label: false,
-                    varianten: [],
                 };
             } else if (type === "Verbauvorschriftdefinition") {
                 return {
-                    produktschluessel: type,
+                    id: uuidv4(),
+                    produktschluessel: keyArr,
+                    labelName: "Verbauvorschriftdefinition",
                     vonmodelljahr: "+ (enthält)",
                     bismodelljahr: "",
                     motortyp: "",
                     getriebetyp: "und",
-                    typ: "Verbauvorschriftdefinition",
+                    typ: type,
                     label: false,
-                    varianten: [],
                 };
             }
         },
 
-        createLabel(type) {
+        createLabel(type, keyArr) {
             if (type === "Aussenfarbdefinition") {
                 return {
-                    produktschluessel: "Aussenfarbdefinitionen",
+                    id: uuidv4(),
+                    produktschluessel: keyArr.concat("Aussenfarbdefinitionen"),
                     vonmodelljahr: "Operator",
                     bismodelljahr: "Außenfarbe",
                     motortyp: "Farbtext",
                     getriebetyp: "Verknüpfung",
                     typ: type,
                     label: true,
-                    varianten: [],
                 };
             } else if (type === "CNummerdefinition") {
                 return {
-                    produktschluessel: "C-Nummerdefinitionen",
+                    id: uuidv4(),
+                    produktschluessel: keyArr.concat("C-Nummerdefinitionenen"),
                     vonmodelljahr: "Operator",
                     bismodelljahr: "Cnr",
                     motortyp: "Bezeichnung",
                     getriebetyp: "Verknüpfung",
                     typ: type,
                     label: true,
-                    varianten: [],
                 };
             } else if (type === "Ausstattungsdefinition") {
                 return {
-                    produktschluessel: "Ausstattungsdefinitionen",
+                    id: uuidv4(),
+                    produktschluessel: keyArr.concat("Ausstattungsdefinitionen"),
                     vonmodelljahr: "Operator",
                     bismodelljahr: "Ausstattungsnr",
                     motortyp: "Bezeichnung",
                     getriebetyp: "Verknüpfung",
                     typ: type,
                     label: true,
-                    varianten: [],
                 };
             } else if (type === "Datumsdefinition") {
                 return {
-                    produktschluessel: "Datumsdefinitionen",
+                    id: uuidv4(),
+                    produktschluessel: keyArr.concat("Datumsdefinitionen"),
                     vonmodelljahr: "Operator",
                     bismodelljahr: "Von",
                     motortyp: "Bis",
                     getriebetyp: "Verknüpfung",
                     typ: type,
                     label: true,
-                    varianten: [],
                 };
             } else if (type === "Innenausstattungsdefinition") {
                 return {
-                    produktschluessel: "Innenausstattungsdefinitionen",
+                    id: uuidv4(),
+                    produktschluessel: keyArr.concat("Innenausstattungsdefinitionen"),
                     vonmodelljahr: "Operator",
                     bismodelljahr: "Code",
                     motortyp: "Bezeichnung",
                     getriebetyp: "Verknüpfung",
                     typ: type,
                     label: true,
-                    varianten: [],
                 };
             } else if (type === "Nummernkreisdefinition") {
                 return {
-                    produktschluessel: "Nummernkreisdefinitionen",
+                    id: uuidv4(),
+                    produktschluessel: keyArr.concat("Nummernkreisdefinitionen"),
                     vonmodelljahr: "Operator",
                     bismodelljahr: "Von",
                     motortyp: "Bis",
                     getriebetyp: "Verknüpfung",
                     typ: type,
                     label: true,
-                    varianten: [],
                 };
             } else if (type === "Versandartdefinition") {
                 return {
-                    produktschluessel: "Versandartdefinitionen",
+                    id: uuidv4(),
+                    produktschluessel: keyArr.concat("Versandartdefinitionen"),
                     vonmodelljahr: "Operator",
                     bismodelljahr: "Nummer",
                     motortyp: "Beschreibung",
                     getriebetyp: "Verknüpfung",
                     typ: type,
                     label: true,
-                    varianten: [],
                 };
             } else if (type === "Verbauvorschriftdefinition") {
                 return {
-                    produktschluessel: "Verbauvorschriftdefinitionen",
+                    id: uuidv4(),
+                    produktschluessel: keyArr.concat("Verbauvorschriftdefinitionen"),
                     vonmodelljahr: "Operator",
                     bismodelljahr: "Verbauvorschrift",
                     motortyp: "",
                     getriebetyp: "Verknüpfung",
                     typ: type,
                     label: true,
-                    varianten: [],
                 };
             }
         },
@@ -392,14 +426,10 @@ export default Vue.extend({
         },
     },
     created() {
-        //this.setMood(this.params);
     },
     computed: {
         determineUsabilityForTeilvariante() {
             return this.cellType === "Teilvariante" ? true : false;
         },
-        isDisabled: function () {
-            return !this.farbeRoot;
-        }
     }
 });

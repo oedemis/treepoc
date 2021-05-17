@@ -28,6 +28,7 @@
         :rowSelection="rowSelection"
         :getDataPath="getDataPath"
         :stopEditingWhenGridLosesFocus="true"
+        :context="context"
         :frameworkComponents="frameworkComponents"
       >
       </ag-grid-vue>
@@ -40,12 +41,7 @@ import { AgGridVue } from "ag-grid-vue";
 import "ag-grid-enterprise";
 import { AutocompleteSelectCellEditor } from "ag-grid-autocomplete-editor";
 import "../node_modules/ag-grid-autocomplete-editor/dist/main.css";
-import {
-  varianten,
-  modelljahrTeilvariante,
-  cnummern,
-  flattenChildrenRecursively,
-} from "../varianten.js";
+import { varianten, modelljahrTeilvariante, cnummern } from "../varianten.js";
 import VueActionCellRenderer from "./vue-action-cell-renderer.js";
 import LeafCellRenderer from "./leaf-cell-renderer.js";
 
@@ -71,6 +67,7 @@ export default {
       cnummern: cnummern,
       frameworkComponents: null,
       getRowNodeId: null,
+      context: null,
     };
   },
   beforeMount() {
@@ -93,12 +90,12 @@ export default {
       {
         field: "vonmodelljahr",
         headerName: "Von Modelljahr",
+        colId: "vonmodelljahr",
         cellEditorSelector: (params) => {
           if (params.data.typ === "Teilvariante") {
             return {
               component: "autocompleteSelectCellEditor",
               params: {
-                //values: this.selectData.map((d) => d.label),
                 required: true,
                 minLength: 3,
                 selectData: this.modelljahrTeilvariante,
@@ -134,6 +131,7 @@ export default {
       },
       {
         field: "bismodelljahr",
+        colId: "bismodelljahr",
         headerName: "Bis Modelljahr",
         //suppressKeyboardEvent: false,
         cellEditorSelector: (params) => this.whichCellEditor(params.data.typ),
@@ -148,6 +146,7 @@ export default {
       {
         field: "motortyp",
         headerName: "Motortyp",
+        colId: "motortyp",
         editable: (params) => {
           if (params.data.label) {
             return false;
@@ -164,6 +163,7 @@ export default {
       {
         field: "getriebetyp",
         headerName: "Getriebetyp",
+        colId: "getriebetyp",
         cellEditorSelector: (params) => {
           if (params.data.typ != "Teilvariante") {
             return {
@@ -177,10 +177,15 @@ export default {
       },
       {
         field: "action",
+        colId: "action",
         headerComponentParams: { template: '<i class="fa fa-wrench"></i>' },
         cellStyle: { textAlign: "center" },
         cellRenderer: "vueActionCellRenderer",
+        cellRendererParams: {
+          suppressDoubleClickExpand: true,
+        },
         cellClass: "actions-button-cell",
+        editable: false,
         width: 60,
       },
     ];
@@ -201,6 +206,27 @@ export default {
         return params.data.produktschluessel[
           params.data.produktschluessel.length - 1
         ];
+      },
+      valueSetter: (params) => {
+        /**
+         * TODO: name can only appear once in tree
+         */
+        if (params.data.typ === "Teilvariante") {
+          params.data.produktschluessel[0] = params.newValue;
+
+          // Update all childs key path
+          let selectedNode = this.gridApi.getSelectedNodes()[0];
+
+          this.updateAllChildrenKeys(
+            selectedNode,
+            params.newValue,
+            params.oldValue
+          );
+          this.gridApi.forEachNode((node) => {
+            console.log(node.data);
+          });
+        }
+        return true;
       },
       cellStyle: { pointerEvents: "auto" },
     };
@@ -223,12 +249,42 @@ export default {
     this.getRowNodeId = (data) => {
       return data.id;
     };
+
+    this.context = { componentParent: this };
   },
   mounted() {
     this.gridApi = this.gridOptions.api;
     this.gridColumnApi = this.gridOptions.columnApi;
   },
   methods: {
+    methodFromParent(cell) {
+      //alert("Parent Component Method from " + cell + "!");
+    },
+    updateAllChildrenKeys(teilvariante, newKey, oldKey) {
+      for (var i = 0; i < teilvariante.childrenAfterGroup.length; i++) {
+        let indexOldValue = teilvariante.childrenAfterGroup[
+          i
+        ].data.produktschluessel.indexOf(oldKey);
+        if (indexOldValue !== -1) {
+          teilvariante.childrenAfterGroup[i].data.produktschluessel[
+            indexOldValue
+          ] = newKey;
+          this.updateAllChildrenKeys(
+            teilvariante.childrenAfterGroup[i],
+            newKey,
+            oldKey
+          );
+        }
+      }
+    },
+    getRowData() {
+      var rowData = [];
+      this.gridApi.forEachNode(function (node) {
+        rowData.push(node.data);
+      });
+      console.log("Row Data:");
+      console.log(rowData);
+    },
     onDeleteLabel(data) {
       this.deleteNodeFromTree(this.loadedData[0], data.id);
       let selectedData = this.gridApi.getSelectedRows()[0];
@@ -236,54 +292,6 @@ export default {
         return row.typ !== selectedData.typ;
       });
       this.rowData = newRowData;
-    },
-    onCreateDto(dto) {
-      let newRowData = this.rowData.slice();
-      let newId =
-        this.rowData.length === 0
-          ? 0
-          : this.rowData[this.rowData.length - 1].id + 1;
-      dto.id = newId;
-      let parentId = this.gridApi.getSelectedRows()[0].id;
-      this.insertNodeIntoTree(this.loadedData[0], parentId, dto);
-
-      newRowData.push(dto);
-      this.rowData = newRowData;
-      //const newArray = array.map(({hierachy, ...keepAttrs}) => keepAttrs)
-      //this.rowData = flattenChildrenRecursively(this.loadedData);
-      this.loadedData.forEach(function (v) {
-        delete v.hierachy;
-      });
-      this.rowData = flattenChildrenRecursively(this.loadedData);
-    },
-    deleteNodeFromTree(node, nodeId) {
-      if (node.varianten != null) {
-        for (let i = 0; i < node.varianten.length; i++) {
-          let filtered = node.varianten.filter((f) => f.id == nodeId);
-          if (filtered && filtered.length > 0) {
-            node.varianten = node.varianten.filter((f) => f.id != nodeId);
-            return;
-          }
-          this.deleteNodeFromTree(node.varianten[i], nodeId);
-        }
-      }
-    },
-    insertNodeIntoTree(node, nodeId, newNode) {
-      if (node.id == nodeId) {
-        // get new id
-        //let n = newNode.id;
-        /** Your logic to generate new Id **/
-
-        if (newNode) {
-          //newNode.id = n;
-          newNode.varianten = [];
-          node.varianten.push(newNode);
-        }
-      } else if (node.varianten != null) {
-        for (let i = 0; i < node.varianten.length; i++) {
-          this.insertNodeIntoTree(node.varianten[i], nodeId, newNode);
-        }
-      }
     },
     onFilterTextBoxChanged() {
       this.gridApi.setQuickFilter(

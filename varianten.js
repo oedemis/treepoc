@@ -83,10 +83,20 @@ const varianten2 = [
   },
 ];
 
+window.genId = function () {
+  return Math.floor(Math.random() * 100);
+}
+
+window.uuidv4 = function () {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
 
 const varianten = [
   {
-    id: 1,
+    id: uuidv4(),
     produktschluessel: [
       "F*"
     ],
@@ -98,7 +108,7 @@ const varianten = [
     label: false,
   },
   {
-    id: 2,
+    id: uuidv4(),
     produktschluessel: [
       "F*", "Ausstattungsdefinitionen"
     ],
@@ -110,7 +120,7 @@ const varianten = [
     label: true,
   },
   {
-    id: 3,
+    id: uuidv4(),
     produktschluessel: [
       "F*", "Ausstattungsdefinitionen"
     ],
@@ -123,7 +133,7 @@ const varianten = [
     label: false,
   },
   {
-    id: 4,
+    id: uuidv4(),
     produktschluessel: [
       "F*", "Ausstattungsdefinitionen"
     ],
@@ -136,7 +146,7 @@ const varianten = [
     label: false,
   },
   {
-    id: 5,
+    id: uuidv4(),
     produktschluessel: [
       "F*", "C-Nummerdefinitionenen"
     ],
@@ -148,7 +158,7 @@ const varianten = [
     label: true,
   },
   {
-    id: 6,
+    id: uuidv4(),
     produktschluessel: [
       "F*", "C-Nummerdefinitionenen"
     ],
@@ -161,7 +171,7 @@ const varianten = [
     label: false,
   },
   {
-    id: 7,
+    id: uuidv4(),
     produktschluessel: [
       "F*", "C-Nummerdefinitionenen"
     ],
@@ -171,6 +181,18 @@ const varianten = [
     motortyp: "SCHWEIZ",
     getriebetyp: "und",
     typ: "CNummerdefinition",
+    label: false,
+  },
+  {
+    id: uuidv4(),
+    produktschluessel: [
+      "Fahrzeug*"
+    ],
+    vonmodelljahr: "6: Modelljahr 2005/06",
+    bismodelljahr: "F: Modelljahr 2005/06",
+    motortyp: "",
+    getriebetyp: "",
+    typ: "Teilvariante",
     label: false,
   },
 ];

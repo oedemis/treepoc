@@ -14,8 +14,10 @@
         class="ag-theme-alpine"
         id="myGrid"
         :rowClassRules="rowClassRules"
+        :immutableData="true"
         :gridOptions="gridOptions"
         @grid-ready="onGridReady"
+        :getRowNodeId="getRowNodeId"
         :rowData="rowData"
         :columnDefs="columnDefs"
         :defaultColDef="defaultColDef"
@@ -67,9 +69,7 @@ export default {
       modelljahrTeilvariante: modelljahrTeilvariante,
       cnummern: cnummern,
       frameworkComponents: null,
-      //loadedData: [],
-      //modelljahrTeilvariante: [],
-      //cnummern: [],
+      getRowNodeId: null,
     };
   },
   beforeMount() {
@@ -184,21 +184,25 @@ export default {
         headerComponentParams: { template: '<i class="fa fa-wrench"></i>' },
         cellStyle: { textAlign: "center" },
         cellRenderer: "vueActionCellRenderer",
-
-        cellRendererParams: {
-          rowData: this.rowData,
-        },
-
-        //cellEditor: "vueActionCellRenderer",
-        cellClass: "actions-button-cell",
-
         /*
         cellRendererParams: {
-          clicked: function (field) {
-            alert(`${field} was clicked`);
+          deleteLabelDto: function (label) {
+            //alert(`${data} was clicked`);
+            console.log(_this);
+            this.$parent.onDelete("huu");
+            console.dir(label);
+            console.dir(this.api);
+            let selectedData = this.api.getSelectedRows()[0];
+            let newRowData = this.rowData.filter((row) => {
+              return row.typ !== selectedData.typ;
+            });
+            console.log(this.rowData);
+            this.rowData = newRowData;
           },
         },
         */
+        //cellEditor: "vueActionCellRenderer",
+        cellClass: "actions-button-cell",
         width: 60,
       },
     ];
@@ -229,14 +233,73 @@ export default {
         return params.data.label;
       },
     };
+
+    this.getRowNodeId = (data) => {
+      return data.id;
+    };
   },
   mounted() {
     this.gridApi = this.gridOptions.api;
     this.gridColumnApi = this.gridOptions.columnApi;
   },
   methods: {
-    onDelete(msg) {
-      console.log(msg);
+    onDeleteLabel(data) {
+      //console.log(this.loadedData);
+      this.deleteNodeFromTree(this.loadedData[0], data.id);
+      //console.log(this.loadedData);
+      let selectedData = this.gridApi.getSelectedRows()[0];
+      let newRowData = this.rowData.filter((row) => {
+        return row.typ !== selectedData.typ;
+      });
+      this.rowData = newRowData;
+    },
+    onCreateDto(dto) {
+      let newRowData = this.rowData.slice();
+      let newId =
+        this.rowData.length === 0
+          ? 0
+          : this.rowData[this.rowData.length - 1].id + 1;
+      dto.id = newId;
+      let parentId = this.gridApi.getSelectedRows()[0].id;
+      this.insertNodeIntoTree(this.loadedData[0], parentId, dto);
+
+      newRowData.push(dto);
+      this.rowData = newRowData;
+      //const newArray = array.map(({hierachy, ...keepAttrs}) => keepAttrs)
+      //this.rowData = flattenChildrenRecursively(this.loadedData);
+      this.loadedData.forEach(function (v) {
+        delete v.hierachy;
+      });
+      this.rowData = flattenChildrenRecursively(this.loadedData);
+    },
+    deleteNodeFromTree(node, nodeId) {
+      if (node.varianten != null) {
+        for (let i = 0; i < node.varianten.length; i++) {
+          let filtered = node.varianten.filter((f) => f.id == nodeId);
+          if (filtered && filtered.length > 0) {
+            node.varianten = node.varianten.filter((f) => f.id != nodeId);
+            return;
+          }
+          this.deleteNodeFromTree(node.varianten[i], nodeId);
+        }
+      }
+    },
+    insertNodeIntoTree(node, nodeId, newNode) {
+      if (node.id == nodeId) {
+        // get new id
+        //let n = newNode.id;
+        /** Your logic to generate new Id **/
+
+        if (newNode) {
+          //newNode.id = n;
+          newNode.varianten = [];
+          node.varianten.push(newNode);
+        }
+      } else if (node.varianten != null) {
+        for (let i = 0; i < node.varianten.length; i++) {
+          this.insertNodeIntoTree(node.varianten[i], nodeId, newNode);
+        }
+      }
     },
     onFilterTextBoxChanged() {
       this.gridApi.setQuickFilter(

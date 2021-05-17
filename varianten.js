@@ -46,6 +46,7 @@ const varianten = [
       },
       // CNummerdefinitionen
       {
+        id: 5,
         produktschluessel: "C-Nummerdefinitionen",
         vonmodelljahr: "Operator",
         bismodelljahr: "Cnr",
@@ -55,6 +56,7 @@ const varianten = [
         label: true,
         varianten: [
           {
+            id: 6,
             produktschluessel: "C-Nummerdefinition",
             vonmodelljahr: "+ (enthält)",
             bismodelljahr: "C02-USA",
@@ -65,6 +67,7 @@ const varianten = [
             varianten: [],
           },
           {
+            id: 7,
             produktschluessel: "C-Nummerdefinition",
             vonmodelljahr: "- (enthält nicht)",
             bismodelljahr: "C10-SCHWEIZ",

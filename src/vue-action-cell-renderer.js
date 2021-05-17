@@ -25,7 +25,7 @@ export default Vue.extend({
 
         <div v-else-if="determineUsabilityForLabel('Ausstattungsdefinition')" class="dropdown-menu dropdown-menu-right">
             <button class="dropdown-item" type="button"><i class="fa fa-cube"></i>&nbsp;&nbsp;Ausstattungsdefinition Anlegen</button>
-            <button @click="deleteDto()" class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Ausstattungsdefinition Löschen</button>
+            <button @click="deleteLabelDto()" class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Ausstattungsdefinition Löschen</button>
         </div>
         <div v-else-if="determineUsabilityForItem('Ausstattungsdefinition')" class="dropdown-menu dropdown-menu-right">
             <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Ausstattungsdefinition Löschen</button>
@@ -94,13 +94,11 @@ export default Vue.extend({
         return {
             cellType: null,
             isLabel: false,
-            rowData: null,
         };
     },
     beforeMount() {
         this.cellType = this.params.data.typ;
         this.isLabel = this.params.data.label;
-        this.rowData = this.params.rowData;
     },
     methods: {
         refresh(params) {
@@ -112,18 +110,41 @@ export default Vue.extend({
             // this.mood = params.value;
         },
 
+        deleteLabelDto() {
+            //this.params.deleteLabelDto(this.params.data);
+
+            //this.params.clicked(this.params.value);
+            //var selectedData = this.params.api.getSelectedRows()[0];
+            //var res = this.params.api.applyTransaction({ remove: selectedData.varianten });
+            //var res = this.params.api.applyTransaction({ remove: [selectedData] });
+            //let newRowData = this.$parent.rowData.filter(row => {
+            //    return row.typ !== selectedData.typ;
+            //});
+            //this.$parent.rowData = newRowData;
+            this.$parent.$parent.onDeleteLabel(this.params.data);
+        },
+
+
         deleteDto() {
+
             var selectedNode = this.params.api.getSelectedNodes()[0];
             //const items = this.getRowsToRemove(selectedNode);
             //this.params.api.applyTransaction({ remove: items });
 
-            var selectedData = this.params.api.getSelectedRows();
-            var res = this.params.api.applyTransaction({ remove: selectedData[0].varianten });
-            var res = this.params.api.applyTransaction({ remove: selectedData });
-            this.rowData = [];
-            this.params.api.refreshCells();
+            var selectedData = this.params.api.getSelectedRows()[0];
+            var res = this.params.api.applyTransaction({ remove: selectedData.varianten });
+            var res = this.params.api.applyTransaction({ remove: [selectedData] });
 
-            this.$emit('delete', 'deleted :)');
+            console.log(this.$parent.rowData);
+
+            let newRowData = this.$parent.rowData.filter(row => {
+                return row !== selectedData;
+            });
+            this.$parent.rowData = newRowData;
+
+            //this.params.api.refreshCells();
+
+            //this.$emit('delete', 'deleted :)');
             //selectedData[0].parent = selectedData[0].parent.varianten.filter(element => element.id === selectedData[0].id)
 
             //this.params.data.find(element => element.typ == type);
@@ -136,6 +157,7 @@ export default Vue.extend({
             }
 
 
+
         },
 
         getRowsToRemove(node) {
@@ -144,19 +166,6 @@ export default Vue.extend({
                 res = res.concat(this.getRowsToRemove(node.childrenAfterGroup[i]));
             }
             return node.data ? res.concat([node.data]) : res;
-        },
-
-        deleteNodeFromTree(node, nodeId) {
-            if (node.children != null) {
-                for (let i = 0; i < node.children.length; i++) {
-                    let filtered = node.children.filter(f => f.nodeId == nodeId);
-                    if (filtered && filtered.length > 0) {
-                        node.children = node.children.filter(f => f.nodeId != nodeId);
-                        return;
-                    }
-                    deleteNodeFromTree(node.children[i], nodeId,);
-                }
-            }
         },
 
         createDto(type) {
@@ -173,12 +182,14 @@ export default Vue.extend({
             // root
             if (item === null || item === undefined) {
                 addedRow = this.createLabel(type);
-                this.params.data.varianten.push(addedRow);
+                //this.params.data.varianten.push(addedRow);
             } else {
                 addedRow = this.createItem(type);
-                item.varianten.push(addedRow);
+                //item.varianten.push(addedRow);
             }
-            this.params.api.applyTransaction({ add: flattenChildrenRecursively([this.params.data]) });
+            this.$parent.$parent.onCreateDto(addedRow);
+            //console.log([this.params.data]);
+            // this.params.api.applyTransaction({ add: flattenChildrenRecursively([this.params.data]) });
         },
 
         createItem(type) {

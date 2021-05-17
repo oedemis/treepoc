@@ -1,4 +1,4 @@
-const varianten = [
+const varianten2 = [
   {
     id: 1,
     produktschluessel: "F*",
@@ -84,13 +84,12 @@ const varianten = [
 ];
 
 
-const varianten2 = [
+const varianten = [
   {
     id: 1,
     produktschluessel: [
-      "1"
+      "F*"
     ],
-    name: "F*",
     vonmodelljahr: "6: Modelljahr 2005/06",
     bismodelljahr: "F: Modelljahr 2005/06",
     motortyp: "",
@@ -101,20 +100,21 @@ const varianten2 = [
   {
     id: 2,
     produktschluessel: [
-      "1", "2"
+      "F*", "Ausstattungsdefinitionen"
     ],
     vonmodelljahr: "Operator",
     bismodelljahr: "Ausstattungsnr",
     motortyp: "Bezeichnung",
     getriebetyp: "Verknüpfung",
-    typ: "Ausstattungsdefinitionen",
+    typ: "Ausstattungsdefinition",
     label: true,
   },
   {
     id: 3,
     produktschluessel: [
-      "1", "2", "3"
+      "F*", "Ausstattungsdefinitionen"
     ],
+    labelName: "Ausstattungsdefinition",
     vonmodelljahr: "+ (enthält)",
     bismodelljahr: "XMA",
     motortyp: "HIMMEL MIT LEDER BEZOGEN",
@@ -125,8 +125,9 @@ const varianten2 = [
   {
     id: 4,
     produktschluessel: [
-      "1", "2", "4"
+      "F*", "Ausstattungsdefinitionen"
     ],
+    labelName: "Ausstattungsdefinition",
     vonmodelljahr: "- (enthält nicht)",
     bismodelljahr: "MAX",
     motortyp: "LEDER BEZOGEN",
@@ -137,20 +138,21 @@ const varianten2 = [
   {
     id: 5,
     produktschluessel: [
-      "1", "3"
+      "F*", "C-Nummerdefinitionenen"
     ],
     vonmodelljahr: "Operator",
     bismodelljahr: "Cnr",
     motortyp: "Bezeichnung",
     getriebetyp: "Verknüpfung",
-    typ: "CNummerdefinitionenen",
+    typ: "CNummerdefinition",
     label: true,
   },
   {
     id: 6,
     produktschluessel: [
-      "1", "3", "4"
+      "F*", "C-Nummerdefinitionenen"
     ],
+    labelName: "C-Nummerdefinition",
     vonmodelljahr: "+ (enthält)",
     bismodelljahr: "C02-USA",
     motortyp: "USA",
@@ -161,8 +163,9 @@ const varianten2 = [
   {
     id: 7,
     produktschluessel: [
-      "1", "3", "5"
+      "F*", "C-Nummerdefinitionenen"
     ],
+    labelName: "C-Nummerdefinition",
     vonmodelljahr: "+ (enthält)",
     bismodelljahr: "C10-SCHWEIZ",
     motortyp: "SCHWEIZ",

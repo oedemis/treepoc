@@ -47,6 +47,7 @@ import {
   flattenChildrenRecursively,
 } from "../varianten.js";
 import VueActionCellRenderer from "./vue-action-cell-renderer.js";
+import LeafCellRenderer from "./leaf-cell-renderer.js";
 
 export default {
   name: "App",
@@ -81,17 +82,12 @@ export default {
       },
     };
 
+    this.rowData = this.loadedData;
+
     this.frameworkComponents = {
       vueActionCellRenderer: VueActionCellRenderer,
+      leafCellRenderer: LeafCellRenderer,
     };
-
-    /*
-    this.gridOptions.onCellClicked = (params) => {
-      //alert(params);
-    };
-    */
-
-    this.rowData = flattenChildrenRecursively(this.loadedData);
 
     this.columnDefs = [
       {
@@ -184,24 +180,6 @@ export default {
         headerComponentParams: { template: '<i class="fa fa-wrench"></i>' },
         cellStyle: { textAlign: "center" },
         cellRenderer: "vueActionCellRenderer",
-        /*
-        cellRendererParams: {
-          deleteLabelDto: function (label) {
-            //alert(`${data} was clicked`);
-            console.log(_this);
-            this.$parent.onDelete("huu");
-            console.dir(label);
-            console.dir(this.api);
-            let selectedData = this.api.getSelectedRows()[0];
-            let newRowData = this.rowData.filter((row) => {
-              return row.typ !== selectedData.typ;
-            });
-            console.log(this.rowData);
-            this.rowData = newRowData;
-          },
-        },
-        */
-        //cellEditor: "vueActionCellRenderer",
         cellClass: "actions-button-cell",
         width: 60,
       },
@@ -217,16 +195,24 @@ export default {
       cellRendererParams: {
         suppressCount: true,
         suppressDoubleClickExpand: true,
+        innerRenderer: "leafCellRenderer",
       },
       valueGetter: (params) => {
-        return params.data.produktschluessel;
+        return params.data.produktschluessel[
+          params.data.produktschluessel.length - 1
+        ];
       },
       cellStyle: { pointerEvents: "auto" },
     };
     this.groupDefaultExpanded = -1;
     this.rowSelection = "single";
     this.getDataPath = (data) => {
-      return data.hierachy;
+      let res = data.produktschluessel;
+      if (data.labelName) {
+        //for leave nodes we add the id to make them unique
+        res.push(data.labelName + data.id);
+      }
+      return res;
     };
     this.rowClassRules = {
       isLabel: (params) => {
@@ -244,9 +230,7 @@ export default {
   },
   methods: {
     onDeleteLabel(data) {
-      //console.log(this.loadedData);
       this.deleteNodeFromTree(this.loadedData[0], data.id);
-      //console.log(this.loadedData);
       let selectedData = this.gridApi.getSelectedRows()[0];
       let newRowData = this.rowData.filter((row) => {
         return row.typ !== selectedData.typ;

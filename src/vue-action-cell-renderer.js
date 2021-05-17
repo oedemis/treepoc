@@ -22,67 +22,67 @@ export default Vue.extend({
 
         <div v-else-if="determineUsabilityForLabel('Ausstattungsdefinition')" class="dropdown-menu dropdown-menu-right">
             <button @click="createDto('Ausstattungsdefinition')" class="dropdown-item" type="button"><i class="fa fa-cube"></i>&nbsp;&nbsp;Ausstattungsdefinition Anlegen</button>
-            <button @click="deleteLabelDto()" class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Ausstattungsdefinition Löschen</button>
+            <button @click="deleteDto()" class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Ausstattungsdefinition Löschen</button>
         </div>
         <div v-else-if="determineUsabilityForItem('Ausstattungsdefinition')" class="dropdown-menu dropdown-menu-right">
-            <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Ausstattungsdefinition Löschen</button>
+            <button @click="deleteDto()" class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Ausstattungsdefinition Löschen</button>
         </div>
 
         <div v-else-if="determineUsabilityForLabel('Aussenfarbdefinition')" class="dropdown-menu dropdown-menu-right">
             <button @click="createDto('Aussenfarbdefinition')" class="dropdown-item" type="button"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Außenfarbdefinition Anlegen</button>
-            <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Außenfarbdefinition Löschen</button>
+            <button @click="deleteDto()" class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Außenfarbdefinition Löschen</button>
         </div>
         <div v-else-if="determineUsabilityForItem('Aussenfarbdefinition')" class="dropdown-menu dropdown-menu-right">
-            <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Außenfarbdefinition Löschen</button>
+            <button @click="deleteDto()" class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Außenfarbdefinition Löschen</button>
         </div>
 
 
         <div v-else-if="determineUsabilityForLabel('CNummerdefinition')" class="dropdown-menu dropdown-menu-right">
             <button @click="createDto('CNummerdefinition')" class="dropdown-item" type="button"><i class="fa fa-globe"></i>&nbsp;&nbsp;C-Nummerdefinition Anlegen</button>
-            <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;C-Nummerdefinition Löschen</button>
+            <button @click="deleteDto()" class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;C-Nummerdefinition Löschen</button>
         </div>
         <div v-else-if="determineUsabilityForItem('CNummerdefinition')" class="dropdown-menu dropdown-menu-right">
-            <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;C-Nummerdefinition Löschen</button>
+            <button @click="deleteDto()" class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;C-Nummerdefinition Löschen</button>
         </div>
 
         <div v-else-if="determineUsabilityForLabel('Datumsdefinition')" class="dropdown-menu dropdown-menu-right">
             <button @click="createDto('Datumsdefinition')" class="dropdown-item" type="button"><i class="fa fa-calendar"></i>&nbsp;&nbsp;Datumsdefinition Anlegen</button>
-            <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Datumsdefinition Löschen</button>
+            <button @click="deleteDto()" class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Datumsdefinition Löschen</button>
         </div>
         <div v-else-if="determineUsabilityForItem('Datumsdefinition')" class="dropdown-menu dropdown-menu-right">
-            <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Datumsdefinition Löschen</button>
+            <button @click="deleteDto()" class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Datumsdefinition Löschen</button>
         </div>
 
         <div v-else-if="determineUsabilityForLabel('Innenausstattungsdefinition')" class="dropdown-menu dropdown-menu-right">
             <button @click="createDto('Innenausstattungsdefinition')" class="dropdown-item" type="button"><i class="fa fa-building"></i>&nbsp;&nbsp;Innenausstattungsdefinition Anlegen</button>
-            <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Innenausstattungsdefinition Löschen</button>
+            <button @click="deleteDto()" class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Innenausstattungsdefinition Löschen</button>
         </div>
         <div v-else-if="determineUsabilityForItem('Innenausstattungsdefinition')" class="dropdown-menu dropdown-menu-right">
-            <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Innenausstattungsdefinition Löschen</button>
+            <button @click="deleteDto()" class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Innenausstattungsdefinition Löschen</button>
         </div>
 
         <div v-else-if="determineUsabilityForLabel('Nummernkreisdefinition')" class="dropdown-menu dropdown-menu-right">
             <button @click="createDto('Nummernkreisdefinition')" class="dropdown-item" type="button"><i class="fa fa-list-ol"></i>&nbsp;&nbsp;Nummernkreisdefinition Anlegen</button>
-            <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Nummernkreisdefinition Löschen</button>
+            <button @click="deleteDto()" class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Nummernkreisdefinition Löschen</button>
         </div>
         <div v-else-if="determineUsabilityForItem('Nummernkreisdefinition')" class="dropdown-menu dropdown-menu-right">
-            <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Nummernkreisdefinition Löschen</button>
+            <button @click="deleteDto()" class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Nummernkreisdefinition Löschen</button>
         </div>
 
         <div v-else-if="determineUsabilityForLabel('Verbauvorschriftdefinition')" class="dropdown-menu dropdown-menu-right">
             <button @click="createDto('Verbauvorschriftdefinition')" class="dropdown-item" type="button"><i class="fa fa-balance-scale"></i>&nbsp;&nbsp;Verbauvorschriftdefinition Anlegen</button>
-            <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Verbauvorschriftdefinition Löschen</button>
+            <button @click="deleteDto()" class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Verbauvorschriftdefinition Löschen</button>
         </div>
         <div v-else-if="determineUsabilityForItem('Verbauvorschriftdefinition')" class="dropdown-menu dropdown-menu-right">
-            <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Verbauvorschriftdefinition Löschen</button>
+            <button @click="deleteDto()" class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Verbauvorschriftdefinition Löschen</button>
         </div>
 
         <div v-else-if="determineUsabilityForLabel('Versandartdefinition')" class="dropdown-menu dropdown-menu-right">
             <button @click="createDto('Versandartdefinition')" class="dropdown-item" type="button"><i class="fa fa-envelope-square"></i>&nbsp;&nbsp;Versandartdefinition Anlegen</button>
-            <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Versandartdefinition Löschen</button>
+            <button @click="deleteDto()" class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Versandartdefinition Löschen</button>
         </div>
         <div v-else-if="determineUsabilityForItem('Versandartdefinition')" class="dropdown-menu dropdown-menu-right">
-            <button class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Versandartdefinition Löschen</button>
+            <button @click="deleteDto()" class="dropdown-item" type="button"><i class="fa fa-trash"></i>&nbsp;&nbsp;Versandartdefinition Löschen</button>
         </div>
         
     </div>
@@ -107,20 +107,6 @@ export default Vue.extend({
             this.params.node.setSelected(true, true);
         },
 
-        deleteLabelDto() {
-            //this.params.deleteLabelDto(this.params.data);
-
-            //this.params.clicked(this.params.value);
-            //var selectedData = this.params.api.getSelectedRows()[0];
-            //var res = this.params.api.applyTransaction({ remove: selectedData.varianten });
-            //var res = this.params.api.applyTransaction({ remove: [selectedData] });
-            //let newRowData = this.$parent.rowData.filter(row => {
-            //    return row.typ !== selectedData.typ;
-            //});
-            //this.$parent.rowData = newRowData;
-            this.$parent.$parent.onDeleteLabel(this.params.data);
-        },
-
 
         deleteDto() {
             var selectedNode = this.params.api.getSelectedNodes()[0];
@@ -131,13 +117,10 @@ export default Vue.extend({
             const toRemoved = this.getRowsToRemove(selectedNode);
             this.params.api.applyTransaction({ remove: toRemoved });
 
-            const newRowData = this.$parent.$parent.rowData.filter(item => !toRemoved.includes(item));
-            this.$parent.$parent.rowData = newRowData;
+            // SET IMUTABLE TO TRUE IN AGGRID
+            //const newRowData = this.$parent.$parent.rowData.filter(item => !toRemoved.includes(item));
+            //this.$parent.$parent.rowData = newRowData;
 
-            if (this.cellType === "Teilvariante") {
-                //this.params.api.setRowData([]);
-                //this.params.data.pop();
-            }
         },
 
         getRowsToRemove(node) {
@@ -160,7 +143,7 @@ export default Vue.extend({
             if (isTypePresentInGroup == false) {
                 // Add Label
                 let keyPath = selectedRow.data.produktschluessel.slice();
-                addedRow = this.createLabel(type, keyPath.slice());
+                addedRow = this.createLabel(type, keyPath);
             } else {
                 // add child
                 let keyPath = selectedRow.data.produktschluessel.slice();
@@ -171,12 +154,8 @@ export default Vue.extend({
                 addedRow = this.createItem(type, keyPath.slice());
             }
             if (addedRow != null) {
-                let transaction = this.params.api.applyTransaction({ add: [addedRow] });
-                this.$parent.$parent.rowData.push(addedRow);
-                if (transaction.add) {
-                    console.log(transaction.add[0]);
-                    transaction.add[0].setSelected(true, true);
-                }
+                //var res = this.params.api.applyTransaction({ add: [addedRow] });
+                this.$parent.$parent.createData(addedRow);
             }
         },
         isTypePresentInGroup(type, selectedNode) {
@@ -349,7 +328,7 @@ export default Vue.extend({
                     bismodelljahr: "Ausstattungsnr",
                     motortyp: "Bezeichnung",
                     getriebetyp: "Verknüpfung",
-                    typ: type,
+                    typ: "Ausstattungsdefinition",
                     label: true,
                 };
             } else if (type === "Datumsdefinition") {

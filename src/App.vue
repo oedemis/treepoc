@@ -14,7 +14,6 @@
         class="ag-theme-alpine"
         id="myGrid"
         :rowClassRules="rowClassRules"
-        :immutableData="true"
         :gridOptions="gridOptions"
         @grid-ready="onGridReady"
         :getRowNodeId="getRowNodeId"
@@ -192,6 +191,7 @@ export default {
     this.defaultColDef = { flex: 1 };
     this.autoGroupColumnDef = {
       headerName: "Produktschlüssel",
+      colId: "produktschluessel",
       minWidth: 300,
       editable: (params) => {
         if (params.data.typ !== "Teilvariante") return false;
@@ -203,30 +203,53 @@ export default {
         innerRenderer: "leafCellRenderer",
       },
       valueGetter: (params) => {
-        return params.data.produktschluessel[
-          params.data.produktschluessel.length - 1
-        ];
+        if (params.data)
+          return params.data.produktschluessel[
+            params.data.produktschluessel.length - 1
+          ];
       },
       valueSetter: (params) => {
         /**
-         * TODO: name can only appear once in tree
+         * TODO: name can only appear once in tree UNIQUE checkeness
          */
         if (params.data.typ === "Teilvariante") {
-          params.data.produktschluessel[0] = params.newValue;
-
           // Update all childs key path
           let selectedNode = this.gridApi.getSelectedNodes()[0];
+          if (!selectedNode) {
+            console.warn("No nodes selected!");
+            return;
+          }
 
-          this.updateAllChildrenKeys(
+          params.data.produktschluessel[0] = params.newValue;
+
+          this.gridApi.forEachNode((node) => {
+            console.log(
+              "before valueSetter " + node.data.produktschluessel.join("")
+            );
+          });
+
+          // let rowsToUpgrade =
+          // this.getRowsToUpdate(selectedNode, params);
+          // this.gridApi.applyTransaction({ update: rowsToUpdate });
+
+          /*this.updateAllChildrenKeys(
             selectedNode,
             params.newValue,
             params.oldValue
-          );
+          );*/
+
           this.gridApi.forEachNode((node) => {
-            console.log(node.data);
+            console.log(
+              "after valueSetter " + node.data.produktschluessel.join("")
+            );
           });
+
+          //this.updateItems();
+
+          return true;
+        } else {
+          return false;
         }
-        return true;
       },
       cellStyle: { pointerEvents: "auto" },
     };
@@ -241,9 +264,7 @@ export default {
       return res;
     };
     this.rowClassRules = {
-      isLabel: (params) => {
-        return params.data.label;
-      },
+      isLabel: (params) => (params.data != undefined ? params.data.label : ""),
     };
 
     this.getRowNodeId = (data) => {
@@ -257,14 +278,56 @@ export default {
     this.gridColumnApi = this.gridOptions.columnApi;
   },
   methods: {
+    createData(data) {
+      console.log(data);
+      let i = 0;
+      this.gridApi.forEachNode((node) => {
+        console.log(++i);
+        console.log("before created " + node.data.produktschluessel.join(""));
+      });
+      let toCreated = [data];
+      let toCreatedAndInsert = toCreated.filter(function (el) {
+        return el != null;
+      });
+      this.gridApi.applyTransaction({ add: toCreatedAndInsert });
+      //this.rowData.push(data);
+      let j = 0;
+      this.gridApi.forEachNode((node) => {
+        console.log(++j);
+        console.log("after created " + node.data.produktschluessel.join(""));
+      });
+    },
     methodFromParent(cell) {
       //alert("Parent Component Method from " + cell + "!");
     },
+    updateItems() {
+      var itemsToUpdate = [];
+      this.gridApi.forEachNodeAfterFilterAndSort(function (rowNode, index) {
+        var data = rowNode.data;
+        itemsToUpdate.push(data);
+      });
+      var res = this.gridApi.applyTransaction({ update: itemsToUpdate });
+    },
+    getRowsToUpdate(selectedNode, params) {
+      console.log("getRowsToUpdate " + selectedNode + " " + params);
+      /**
+       * Soll Alle modizizierten childrens zurückgeben
+       */
+      let res = [];
+      let newKeyPath = params.newValue;
+      selectedNode.key = newKeyPath;
+      if (selectedNode.data) {
+        selectedNode.data.produktschluessel = newKeyPath;
+      }
+    },
     updateAllChildrenKeys(teilvariante, newKey, oldKey) {
+      teilvariante.key = newKey;
+
       for (var i = 0; i < teilvariante.childrenAfterGroup.length; i++) {
         let indexOldValue = teilvariante.childrenAfterGroup[
           i
         ].data.produktschluessel.indexOf(oldKey);
+
         if (indexOldValue !== -1) {
           teilvariante.childrenAfterGroup[i].data.produktschluessel[
             indexOldValue

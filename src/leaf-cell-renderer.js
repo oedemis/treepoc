@@ -17,7 +17,7 @@ export default Vue.extend({
     },
     methods: {
         refresh(params) {
-            this.params = params;
+            //this.params = params;
         },
     },
 });

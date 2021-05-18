@@ -94,12 +94,15 @@ export default Vue.extend({
         };
     },
     beforeMount() {
-        this.cellType = this.params.data.typ;
-        this.isLabel = this.params.data.label;
+        if (this.params.data) {
+            this.cellType = this.params.data.typ;
+            this.isLabel = this.params.data.label;
+        }
     },
     methods: {
         refresh(params) {
             this.params = params;
+            return false;
         },
 
         invokeParentMethod() {
@@ -142,20 +145,19 @@ export default Vue.extend({
 
             if (isTypePresentInGroup == false) {
                 // Add Label
-                let keyPath = selectedRow.data.produktschluessel.slice();
+                let keyPath = Array.from(selectedRow.data.produktschluessel);
                 addedRow = this.createLabel(type, keyPath);
             } else {
                 // add child
-                let keyPath = selectedRow.data.produktschluessel.slice();
+                let keyPath = Array.from(selectedRow.data.produktschluessel);
                 // Von Parent Root aus geadded zB F*
                 if (keyPath.length == 1) {
                     keyPath.push(this.getPluralTyp(type));
                 }
-                addedRow = this.createItem(type, keyPath.slice());
+                addedRow = this.createItem(type, keyPath);
             }
             if (addedRow != null) {
                 var res = this.params.api.applyTransaction({ add: [addedRow] });
-                //this.$parent.$parent.createData(addedRow);
             }
         },
         isTypePresentInGroup(type, selectedNode) {

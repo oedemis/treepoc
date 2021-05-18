@@ -266,7 +266,8 @@ export default {
           if (selectedNode.childrenAfterGroup.length == 0) {
             params.data.produktschluessel[0] = params.newValue;
             //const rowNode = this.gridApi.getRowNode(selectedNode.data.id);
-            //rowNode.setData(selectedNode.data);
+            //rowNode.setData(params.data);
+
             this.gridApi.applyTransaction({
               update: [selectedNode.data],
               addIndex: 0,

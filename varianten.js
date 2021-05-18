@@ -195,6 +195,18 @@ const varianten = [
     typ: "Teilvariante",
     label: false,
   },
+  {
+    id: uuidv4(),
+    produktschluessel: [
+      "Tayan*"
+    ],
+    vonmodelljahr: "6: Modelljahr 2005/06",
+    bismodelljahr: "F: Modelljahr 2005/06",
+    motortyp: "",
+    getriebetyp: "",
+    typ: "Teilvariante",
+    label: false,
+  },
 ];
 
 const modelljahrTeilvariante = [

@@ -154,8 +154,8 @@ export default Vue.extend({
                 addedRow = this.createItem(type, keyPath.slice());
             }
             if (addedRow != null) {
-                //var res = this.params.api.applyTransaction({ add: [addedRow] });
-                this.$parent.$parent.createData(addedRow);
+                var res = this.params.api.applyTransaction({ add: [addedRow] });
+                //this.$parent.$parent.createData(addedRow);
             }
         },
         isTypePresentInGroup(type, selectedNode) {

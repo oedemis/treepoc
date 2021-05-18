@@ -104,16 +104,52 @@ export default {
                   strict: true,
                   autoselectfirst: false,
                   showOnFocus: true,
+                  render(cellEditor, item, value) {
+                    const itemElement = document.createElement("div");
+                    const escapedValue = (value ?? "").replace(
+                      /[$()*+.?[\\\]^{|}]/g,
+                      "\\$&"
+                    );
+                    const regex = new RegExp(escapedValue, "gi");
+                    const fieldItem = document.createElement("span");
+                    let matched = false;
+                    fieldItem.innerHTML = item.label.replace(
+                      regex,
+                      function strongify(match) {
+                        matched = true;
+                        cellEditor.currentItem = item;
+                        return `<strong>${match}</strong>`;
+                      }
+                    );
+                    if (matched) {
+                      itemElement.classList.add("matched");
+                    }
+                    itemElement.append(fieldItem);
+                    cellEditor.addManagedListener(
+                      itemElement,
+                      "mousedown",
+                      (event) => {
+                        // eslint-disable-next-line no-param-reassign
+                        cellEditor.currentItem = item;
+                        event.stopPropagation();
+                      }
+                    );
+
+                    return itemElement;
+                  },
                   fetch: (cellEditor, text, update) => {
                     var suggestions = this.modelljahrTeilvariante;
                     update(suggestions);
+                    if (document.querySelector(".matched"))
+                      document.querySelector(".matched").scrollIntoView();
                   },
                 },
               },
             };
           } else {
             return {
-              component: "agRichSelectCellEditor",
+              // agRichSelect
+              component: "agSelectCellEditor",
               params: {
                 values: ["+ (enthält)", "- (enthält nicht)"],
               },
@@ -166,7 +202,7 @@ export default {
         cellEditorSelector: (params) => {
           if (params.data.typ != "Teilvariante") {
             return {
-              component: "agRichSelect",
+              component: "agSelectCellEditor",
               params: { values: ["und", "oder"] },
             };
           }
@@ -192,6 +228,7 @@ export default {
     this.autoGroupColumnDef = {
       headerName: "Produktschlüssel",
       colId: "produktschluessel",
+      field: "produktschluessel",
       minWidth: 300,
       editable: (params) => {
         if (params.data.typ !== "Teilvariante") return false;
@@ -220,32 +257,41 @@ export default {
             return;
           }
 
-          params.data.produktschluessel[0] = params.newValue;
-
           this.gridApi.forEachNode((node) => {
             console.log(
               "before valueSetter " + node.data.produktschluessel.join("")
             );
           });
 
-          // let rowsToUpgrade =
-          // this.getRowsToUpdate(selectedNode, params);
-          // this.gridApi.applyTransaction({ update: rowsToUpdate });
+          if (selectedNode.childrenAfterGroup.length == 0) {
+            params.data.produktschluessel[0] = params.newValue;
+            //const rowNode = this.gridApi.getRowNode(selectedNode.data.id);
+            //rowNode.setData(selectedNode.data);
+            this.gridApi.applyTransaction({
+              update: [selectedNode.data],
+              addIndex: 0,
+            });
+          } else {
+            params.data.produktschluessel[0] = params.newValue;
 
-          /*this.updateAllChildrenKeys(
-            selectedNode,
-            params.newValue,
-            params.oldValue
-          );*/
+            let newData = this.updateAllChildrenKeys(
+              selectedNode,
+              params.newValue,
+              params.oldValue
+            );
+            selectedNode.data = newData.data;
+            this.gridApi.applyTransaction({
+              remove: [selectedNode.data],
+              addIndex: 1000,
+            });
+            this.gridApi.applyTransaction({ add: [newData.data], addIndex: 0 });
+          }
 
           this.gridApi.forEachNode((node) => {
             console.log(
               "after valueSetter " + node.data.produktschluessel.join("")
             );
           });
-
-          //this.updateItems();
-
           return true;
         } else {
           return false;
@@ -278,25 +324,6 @@ export default {
     this.gridColumnApi = this.gridOptions.columnApi;
   },
   methods: {
-    createData(data) {
-      console.log(data);
-      let i = 0;
-      this.gridApi.forEachNode((node) => {
-        console.log(++i);
-        console.log("before created " + node.data.produktschluessel.join(""));
-      });
-      let toCreated = [data];
-      let toCreatedAndInsert = toCreated.filter(function (el) {
-        return el != null;
-      });
-      this.gridApi.applyTransaction({ add: toCreatedAndInsert });
-      //this.rowData.push(data);
-      let j = 0;
-      this.gridApi.forEachNode((node) => {
-        console.log(++j);
-        console.log("after created " + node.data.produktschluessel.join(""));
-      });
-    },
     methodFromParent(cell) {
       //alert("Parent Component Method from " + cell + "!");
     },
@@ -308,21 +335,7 @@ export default {
       });
       var res = this.gridApi.applyTransaction({ update: itemsToUpdate });
     },
-    getRowsToUpdate(selectedNode, params) {
-      console.log("getRowsToUpdate " + selectedNode + " " + params);
-      /**
-       * Soll Alle modizizierten childrens zurückgeben
-       */
-      let res = [];
-      let newKeyPath = params.newValue;
-      selectedNode.key = newKeyPath;
-      if (selectedNode.data) {
-        selectedNode.data.produktschluessel = newKeyPath;
-      }
-    },
-    updateAllChildrenKeys(teilvariante, newKey, oldKey) {
-      teilvariante.key = newKey;
-
+    updateChildrens(teilvariante, newKey, oldKey) {
       for (var i = 0; i < teilvariante.childrenAfterGroup.length; i++) {
         let indexOldValue = teilvariante.childrenAfterGroup[
           i
@@ -339,6 +352,27 @@ export default {
           );
         }
       }
+    },
+    updateAllChildrenKeys(teilvariante, newKey, oldKey) {
+      let rootWithChildren = teilvariante;
+      rootWithChildren.key = newKey;
+      for (var i = 0; i < rootWithChildren.childrenAfterGroup.length; i++) {
+        let indexOldValue = rootWithChildren.childrenAfterGroup[
+          i
+        ].data.produktschluessel.indexOf(oldKey);
+
+        if (indexOldValue !== -1) {
+          rootWithChildren.childrenAfterGroup[i].data.produktschluessel[
+            indexOldValue
+          ] = newKey;
+          this.updateAllChildrenKeys(
+            rootWithChildren.childrenAfterGroup[i],
+            newKey,
+            oldKey
+          );
+        }
+      }
+      return rootWithChildren;
     },
     getRowData() {
       var rowData = [];
@@ -394,7 +428,6 @@ export default {
             placeholder: "Select an option",
             autocomplete: {
               onSelect(cellEditor, item, event) {
-                console.log(event);
                 item = cellEditor.currentItem;
                 if (type === "CNummerdefinition") {
                   let selectedRows = gridApi.getSelectedRows();
